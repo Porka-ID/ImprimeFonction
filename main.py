@@ -17,6 +17,8 @@ class Application(tk.Frame): # objet
 
         print(self.entryEq.get())
 
+        print(self.Title)
+
 
 
 
