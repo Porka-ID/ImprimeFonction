@@ -16,12 +16,21 @@ class Database():
 
 
 class Application(tk.Frame):  # objet
-    def click(self, *args):
-        self.EntryEqA.delete(0, 'end')
+    def click(self, result, *args):
+        print(result)
+        if result == "a":
+            self.EntryEqA.delete(0, 'end')
+        elif result == "b":
+            self.EntryEqB.delete(0, "end")
+        else:
+            self.EntryEqC.delete(0, "end")
 
     def leave(self):
         self.destroy()
         exit()
+
+    def getText(self):
+        self.leave()
 
     def __init__(self, master):  #
         Database()
@@ -41,19 +50,20 @@ class Application(tk.Frame):  # objet
         self.EntryEqA = tk.Entry(self.master, text="La valeur de a", width=25)
         self.EntryEqA.insert(0, 'Entrée la valeur de a (ax²)')
         self.EntryEqA.grid(padx=75, pady=0)
-        self.EntryEqA.bind("<Button-1>", self.click)
+        self.EntryEqA.bind("<Button-1>", lambda a = "a": self.click("a"))
 
         self.EntryEqB = tk.Entry(self.master, text="La valeur de b", width=25)
         self.EntryEqB.insert(0, 'Entrée la valeur de b (bx)')
         self.EntryEqB.grid(padx=75, pady=1)
-        self.EntryEqB.bind("<Button-1>", self.click)
+        self.EntryEqB.bind("<Button-1>", lambda b = "b" : self.click("b"))
 
-        self.EntryEqC = tk.Entry(self.master, text="La valeur de c", width=25)
+        self.EntryCString = tk.StringVar(self)
+        self.EntryEqC = tk.Entry(self.master, text="La valeur de c", textvariable= self.EntryCString , width=25)
         self.EntryEqC.insert(0, 'Entrée la valeur de c (c)')
         self.EntryEqC.grid(padx=75, pady=1)
-        self.EntryEqC.bind("<Button-1>", self.click)
+        self.EntryEqC.bind("<Button-1>", lambda  c = "c": self.click("c"))
 
-        self.confirmBtn = tk.Button(self.master, text="Valider", command = self.leave )
+        self.confirmBtn = tk.Button(self.master, text="Valider", command = self.getText )
         self.confirmBtn.grid(padx=0, pady=5)
 
 
