@@ -67,7 +67,7 @@ class Application(tk.Frame):  # objet
         self.confirmBtn.grid(padx=0, pady=5)
 
 
-
-root = tk.Tk()
-myApp = Application(root)
-myApp.mainloop()
+if __name__ == '__main__':
+    root = tk.Tk()
+    myApp = Application(root)
+    myApp.mainloop()
