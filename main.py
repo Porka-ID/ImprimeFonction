@@ -17,7 +17,6 @@ class Database():
 
 class Application(tk.Frame):  # objet
     def click(self, result, *args):
-        print(result)
         if result == "a":
             self.EntryEqA.delete(0, 'end')
         elif result == "b":
@@ -30,9 +29,32 @@ class Application(tk.Frame):  # objet
         exit()
 
     def getText(self):
+        print(self.EntryEqA.get())
+        print(self.EntryEqB.get())
+        print(self.EntryEqC.get())
+        self.delta()
         self.leave()
 
+    def delta(self):
+        self.a = int(self.EntryEqA.get())
+        self.b = int(self.EntryEqB.get())
+        self.c = int(self.EntryEqC.get())
+        self.deltaval = (self.b * self.b) - (4 * self.a * self.c)
+        print("Delta : " + str(self.deltaval))
+        self.x = -(self.b/(2*self.a))
+        self.y = ((4*self.a*self.c) - (self.b*self.b))/(4*self.a)
+        self.sommet = [self.x, self.y]
+        print("Coordonées du sommet")
+        print(self.sommet)
+
     def __init__(self, master):  #
+        self.a = None
+        self.b = None
+        self.c = None
+        self.deltaval = None
+        self.sommet = None
+        self.x = None
+        self.y = None
         Database()
 
         super().__init__(master)
