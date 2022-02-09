@@ -2,6 +2,7 @@ import tkinter as tk  # Importe le module tkinter
 import sqlite3 # Importe le module sqlite 3 qui servira à créer une base de données et la géré.
 from datetime import datetime
 import sys
+import math
 
 class Database():
     def __init__(self):
@@ -41,11 +42,29 @@ class Application(tk.Frame):  # objet
         self.c = int(self.EntryEqC.get())
         self.deltaval = (self.b * self.b) - (4 * self.a * self.c)
         print("Delta : " + str(self.deltaval))
-        self.x = -(self.b/(2*self.a))
-        self.y = ((4*self.a*self.c) - (self.b*self.b))/(4*self.a)
+        self.x = round(-(self.b/(2*self.a)), 2)
+        self.y = round(((4*self.a*self.c) - (self.b*self.b))/(4*self.a), 2)
         self.sommet = [self.x, self.y]
         print("Coordonées du sommet")
         print(self.sommet)
+        self.algo()
+
+    def algo(self):
+        self.list_all_value = []
+        for x in range(-15, 15):
+            self.acarré = (self.a*(x*x))
+            self.bx = (self.b * x)
+            self.c = self.c
+            self.fx = self.acarré + self.bx + self.c
+            self.fxdex = [x, self.fx]
+            self.list_all_value.append(self.fxdex)
+        print(self.list_all_value)
+        self.writeGcode()
+
+    def writeGcode(self):
+        with open("myGcode.gcode", "w") as f:
+            for x,y in self.list_all_value:
+                f.write(f"G1 X{x} Y{y} ;\n")
 
     def __init__(self, master):  #
         self.a = None
