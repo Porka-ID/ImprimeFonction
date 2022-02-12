@@ -94,9 +94,10 @@ class Application(tk.Frame):  # objet
         self.filegcode = "function.gcode"
         with open(self.filegcode, "w") as f:
             for x, y in self.xy:
-                if not x+4 > limit_PLUSx and not x < limit_MOINSx:
+                if not x > limit_PLUSx and not x < limit_MOINSx:
                     if not y > limit_PLUSy and not y < limit_MOINSy:
-                        f.write(f'G1 X{x+4} Y{y} ;\n')
+                        f.write(f'G1 X{x} Y{y} ;\n')
+        self.leave()
 
     def __init__(self, master):  #
         self.a = None
