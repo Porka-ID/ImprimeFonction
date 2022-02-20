@@ -3,10 +3,10 @@ import sqlite3 # Importe le module sqlite 3 qui servira à créer une base de do
 from datetime import datetime
 import sys
 
-limit_PLUSx = 50
-limit_MOINSx = -50
-limit_PLUSy = 10
-limit_MOINSy = -10
+limit_PLUSx = 20
+limit_MOINSx = -limit_PLUSx
+limit_PLUSy = 20
+limit_MOINSy = -limit_PLUSy
 
 numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
@@ -78,7 +78,7 @@ class Application(tk.Frame):  # objet
 
     def calculateAllPoint(self):
         self.xy = []
-        for x in seq(-3, 3, 0.01):
+        for x in seq(-self.xmax, self.xmax, 0.01):
             self.xcarre = round(x, 2)*round(x, 2)
             print(self.xcarre)
             self.ax = self.a * self.xcarre
@@ -92,11 +92,44 @@ class Application(tk.Frame):  # objet
     def writeOnGcodeFile(self):
         self.filegcode = "function.gcode"
         with open(self.filegcode, "w") as f:
+            f.write('M3 S0000;\n')
+            limit = 0
             for x, y in self.xy:
-                if not x+4 > limit_PLUSx and not x < limit_MOINSx:
+                if not x > limit_PLUSx and not x < limit_MOINSx:
                     if not y > limit_PLUSy and not y < limit_MOINSy:
-                        f.write(f'G1 X{x+4} Y{y} F1500;\n')
+                        f.write(f'G1 X{x} Y{y} F1500;\n')
+                        limit += 1
+                        if limit == 1:
+                            f.write('S800;\n')
+                            f.write(f'G1 X{x} Y{y} F1500;\n')
+            self.xAxisWrite(f)
+            self.yAxisWrite(f)
         self.leave()
+
+    def xAxisWrite(self, f):
+        f.write('S0000;\n')
+        xlimite = 0
+        for i in range(-self.xmax, self.xmax):
+            xlimite += 1
+            f.write(f'G1 X{i} Y0 F1500;\n')
+            f.write(f'G1 X{i} Y-0.2 F1500;\n')
+            f.write(f'G1 X{i} Y0.2 F1500;\n')
+            f.write(f'G1 X{i} Y0 F1500;\n')
+            if xlimite == 1:
+                f.write('S800;\n')
+                f.write(f'G1 X{i} Y0 F1500;\n')
+
+    def yAxisWrite(self, f):
+        f.write('S0000;\n')
+        ylimite = 0
+        for k in range(-self.ymax, self.ymax):
+            ylimite += 1
+            f.write(f'G1 X0 Y{k} F1500;\n')
+            f.write(f'G1 X-0.2 Y{k} F1500;\n')
+            f.write(f'G1 X0.2 Y{k} F1500;\n')
+            f.write(f'G1 X0 Y{k} F1500;\n')
+            if ylimite == 1:
+                f.write('S800;\n')
 
     def __init__(self, master):  #
         self.a = None
@@ -106,13 +139,15 @@ class Application(tk.Frame):  # objet
         self.sommet = None
         self.x = None
         self.y = None
+        self.xmax = limit_PLUSx + 2
+        self.ymax = limit_PLUSy + 2
         Database()
 
         super().__init__(master)
         self.grid()
         self.master = master
 
-        self.master.geometry("350x210")
+        self.master.geometry("300x180")
 
         self.Title = tk.Label(self.master, text="Bienvenue dans imprimeFonction", anchor="w")
         self.Title.grid(padx=0, pady=0)
